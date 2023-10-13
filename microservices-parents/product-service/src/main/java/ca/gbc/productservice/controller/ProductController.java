@@ -16,10 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductServiceImpl productService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createProduct(@RequestBody ProductRequest productRequest){
-        productService.createProduct(productRequest);
+        productService.createProduct((productRequest));
     }
 
     @GetMapping
@@ -27,16 +28,19 @@ public class ProductController {
     public List<ProductResponse> getAllProducts(){
         return productService.getAllProducts();
     }
-    @PutMapping({"/{productId}"})
-    public ResponseEntity<?> updateProduct(@PathVariable("productId") String productId,
+
+    @PutMapping({"/{productId}"})   //exract the product from the incoming url
+    public ResponseEntity<?>updateProduct(@PathVariable ("productId") String productId,
                                            @RequestBody ProductRequest productRequest){
         String updateProductId = productService.updateProduct(productId, productRequest);
+
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/product"+updateProductId);
-        return new ResponseEntity<>(headers,HttpStatus.NO_CONTENT);
+        headers.add("Location", "/api/product/" + updateProductId);
+
+        return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     public ResponseEntity<?> deleteProduct(@PathVariable("productId") String productId){
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
