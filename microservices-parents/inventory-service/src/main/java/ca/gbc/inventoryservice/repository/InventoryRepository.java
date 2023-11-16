@@ -12,11 +12,15 @@ import java.util.stream.Collectors;
 public interface InventoryRepository extends JpaRepository<Inventory,Long> {
     Optional<Inventory> findBySkuCode(String skuCode);
 
-    @Query("SELECT i FROM Inventory i WHERE i.skuCode= :skuCode AND i.quantity>= :quantity")
+
+
+    @Query("select i from Inventory i where i.skuCode = :skuCode and i.quantity >= :quantity")
     List<Inventory> findBySkuCodeAndQuantity(String skuCode, Integer quantity);
-    default List<Inventory> findAllByInventoryRequests(List<InventoryRequest> inventoryRequest){
-        return inventoryRequest.stream()
-                .flatMap(request -> findBySkuCodeAndQuantity(request.getSkuCode(), request.getQuantity()).stream())
+
+    default List<Inventory> findAllByInventoryRequests(List<InventoryRequest> inventoryRequests){
+        return inventoryRequests.stream()
+                .flatMap(request -> findBySkuCodeAndQuantity(request.getSkuCode(),request.getQuantity()).stream())
                 .collect(Collectors.toList());
+
     }
 }

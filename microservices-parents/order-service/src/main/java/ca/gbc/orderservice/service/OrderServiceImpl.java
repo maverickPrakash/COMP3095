@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class OrderServiceImpl implements OrderService{
     private String inventoryApiUri;
     public void placeOrder(OrderRequest orderRequest){
         Order order = new Order();
+
         order.setOrderNumber(UUID.randomUUID().toString());
         List<OrderLineItem> orderLineItems = orderRequest
                 .getOrderLineItemDtoList()
@@ -40,7 +42,7 @@ public class OrderServiceImpl implements OrderService{
         List<InventoryRequest> inventoryRequests = order.getOrderLineItemList()
                         .stream().map(orderLineItem -> InventoryRequest
                         .builder()
-                        .skuCode(orderLineItem.getSkucode())
+                        .skuCode(orderLineItem.getSkuCode())
                         .quantity(orderLineItem.getQuantity())
                         .build()).toList();
         List<InventoryResponse> inventoryResponseList = webClient.build()
@@ -59,7 +61,7 @@ public class OrderServiceImpl implements OrderService{
         if(Boolean.TRUE.equals(allProductsInStock)){
             orderRepository.save(order);
         }else {
-            throw new RuntimeException("Not all the product are in stock "+allProductsInStock);
+            throw new RuntimeException("Not all the product are in stock "+inventoryResponseList);
         }
 
 
@@ -70,7 +72,7 @@ public class OrderServiceImpl implements OrderService{
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setPrice(orderLineItemDto.getPrice());
         orderLineItem.setQuantity(orderLineItemDto.getQuanity());
-        orderLineItem.setSkucode(orderLineItemDto.getSkucode());
+        orderLineItem.setSkuCode(orderLineItemDto.getSkuCode());
         return orderLineItem;
     }
 }

@@ -21,15 +21,13 @@ public class InventoryServiceImpl implements InventoryService {
     public List<InventoryResponse> isInStock(List<InventoryRequest> requests) {
 
         List<Inventory> availableInventory = inventoryRepository.findAllByInventoryRequests(requests);
-
+//        if(true)
+//        throw new RuntimeException("hello "+ requests.stream().map(InventoryRequest::getSkuCode).toList().toString());
         return requests.stream().map(request -> {
 
             boolean isInStock = availableInventory.stream()
                     .anyMatch(inventory -> inventory.getSkuCode().equals(request.getSkuCode())
                             && inventory.getQuantity() >= request.getQuantity());
-            if(!isInStock){
-                throw new RuntimeException("hehehehehhdhd");
-            }
 
             if(isInStock){
                 return InventoryResponse.builder()

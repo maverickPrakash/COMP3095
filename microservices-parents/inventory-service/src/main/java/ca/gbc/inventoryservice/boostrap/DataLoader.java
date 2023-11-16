@@ -20,7 +20,7 @@ public class DataLoader implements CommandLineRunner {
         if(inventoryRepository.findBySkuCode("sku_123456").isEmpty()){
             Inventory widgets =  Inventory.builder()
                     .skuCode("sku_123456")
-            .quantity(4).build();
+            .quantity(3).build();
 
             inventoryRepository.save(widgets);
         }
@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
         if(inventoryRepository.findBySkuCode("sku_1766").isEmpty()){
             Inventory widgets =  Inventory.builder()
                     .skuCode("sku_1766")
-                    .quantity(10).build();
+                    .quantity(5).build();
 
             inventoryRepository.save(widgets);
         }
@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
         if(inventoryRepository.findBySkuCode("sku_55555").isEmpty()){
             Inventory widgets =  Inventory.builder()
                     .skuCode("sku_55555")
-                    .quantity(12).build();
+                    .quantity(0).build();
 
             inventoryRepository.save(widgets);
         }

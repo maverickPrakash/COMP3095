@@ -19,9 +19,11 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String skucode;
+    private String skuCode;
     private Integer quantity;
     private BigDecimal price;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItemList;
+
+
 }
