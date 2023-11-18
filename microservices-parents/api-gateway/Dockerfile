@@ -29,8 +29,6 @@ RUN mkdir /app
 
 COPY --from=builder /home/gradle/src/build/libs/*.jar /app/api-gateway.jar
 
-ENV POSTGRES_USER=admin \
-    POSTGRES_PASSWORD=password
 
 EXPOSE 8181
 
