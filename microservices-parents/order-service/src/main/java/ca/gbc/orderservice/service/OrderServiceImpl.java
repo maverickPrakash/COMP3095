@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService{
     private OrderLineItem mapToDto(OrderLineItemDto orderLineItemDto){
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setPrice(orderLineItemDto.getPrice());
-        orderLineItem.setQuantity(orderLineItemDto.getQuanity());
+        orderLineItem.setQuantity(orderLineItemDto.getQuantity());
         orderLineItem.setSkuCode(orderLineItemDto.getSkuCode());
         return orderLineItem;
     }

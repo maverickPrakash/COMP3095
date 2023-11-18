@@ -6,6 +6,7 @@ import ca.gbc.orderservice.dto.OrderRequest;
 import ca.gbc.orderservice.model.Order;
 import ca.gbc.orderservice.repository.OrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import ca.gbc.userservice.AbstractBaseContainerTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -25,7 +27,8 @@ import java.util.Random;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-
+@TestPropertySource(properties = "spring.cloud.loadbalancer.enabled=false")
+@Transactional
 
 class OrderServiceApplicationTests  extends AbstractBaseContainerTest {
 @Autowired
@@ -41,7 +44,7 @@ private static MockWebServer mockWebServer;
 		return OrderLineItemDto.builder()
 				.id(new Random().nextLong())
 				.skuCode(sku)
-				.quanity(1)
+				.quantity(1)
 				.price(BigDecimal.valueOf(100.00))
 				.build();
 	}
