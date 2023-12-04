@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  keycloak:
+    image: mihaibob/keycloak:15.0.1
+    ports:
+      - "8080:8080"
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: postgres-keycloak
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password
+      #KEYCLOAK_IMPORT: /opt/jboss/keycloak/realms/spring-boot-microservices-realm.json
+    volumes:
+      - ./realms/:/opt/mihaibob/keycloak/realms
+    container_name: keycloak
+    depends_on:
+      - postgres-keycloak
+    restart: unless-stopped
+    networks:
+      - spring
+
+
   api-gateway:
     image: api-gateway
     ports:
@@ -9,7 +32,6 @@ services:
       context: ./api-gateway
       dockerfile: ./Dockerfile
     container_name: api-gateway
-
     environment:
       SPRING_PROFILES_ACTIVE: docker
     networks:
@@ -131,6 +153,22 @@ services:
       - ./data/postgres/inventory-service:/data/db
       - ./init/postgres/inventory-service/init.sql:/docker-entrypoint-initdb.d/init.sql
     container_name: postgres-inventory
+    restart: unless-stopped
+    networks:
+      - spring
+
+
+  postgres-keycloak:
+    image: postgres
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=keycloak
+    volumes:
+      - ./data/postgres/postgres-keycloak:/data/db
+    container_name: postgres-keycloak
     restart: unless-stopped
     networks:
       - spring

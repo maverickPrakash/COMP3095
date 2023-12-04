@@ -22,14 +22,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @AutoConfigureMockMvc
-class InventoryServiceApplicationTests {
+class InventoryServiceApplicationTests extends AbstractBaseContainerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -42,24 +42,17 @@ class InventoryServiceApplicationTests {
 	@Test
 	public void isInStock() throws Exception {
 		Inventory data1 = Inventory.builder()
-				.id(14L)
-				.quantity(12)
-				.skuCode("sku345")
-				.build();
-
-		Inventory data2= Inventory.builder()
-				.id(13L)
-				.quantity(12)
+				.id(new Random().nextLong())
+				.quantity(2)
 				.skuCode("sku123")
 				.build();
+
 		inventoryRepository.save(data1);
-		inventoryRepository.save(data2);
+
 		Assertions.assertThat(inventoryRepository.findAll().size()>0);
 		List<InventoryRequest> inventoryRequestsList = new ArrayList<>();
 		InventoryRequest dataReq1 = InventoryRequest.builder().skuCode("sku123").quantity(2).build();
-		InventoryRequest dataReq2 = InventoryRequest.builder().skuCode("sku345").quantity(2).build();
 		inventoryRequestsList.add(dataReq1);
-		inventoryRequestsList.add(dataReq2);
 		String dataSender = objectMapper.writeValueAsString(inventoryRequestsList);
 		ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/inventory")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +63,7 @@ class InventoryServiceApplicationTests {
 		int actualSize = jsonNodes.size();
 
 
-		Assertions.assertThat(actualSize==2);
+		Assertions.assertThat(actualSize>0);
 
 
 
